@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace HeliFireFighting
 {
@@ -160,12 +161,12 @@ namespace HeliFireFighting
         /// <param name="mouseX">Mouse X position</param>
         /// <param name="mouseY">Mouse Y position</param>
         /// <param name="isLeftButtonDown">Left mouse button pressed state.</param>
-        public void Update(float mouseX, float mouseY, bool isLeftButtonDown)
+        public void Update(MouseState mouseState,KeyboardState keyboardState)
         {
-            playerHeli.Update(mouseX, mouseY);
+            playerHeli.Update(keyboardState);
 
             //Adds water.
-            if (isLeftButtonDown)
+            if (keyboardState.GetPressedKeys().Contains(Keys.Space))
             {
                 WaterParticle particle = new WaterParticle(waterTexture);
                 particle.X = playerHeli.X;

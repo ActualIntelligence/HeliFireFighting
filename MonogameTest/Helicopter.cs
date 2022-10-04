@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,22 @@ namespace HeliFireFighting
 {
     internal class Helicopter
     {
+        const float ROTATION_RATE = 2;
         const float MAX_ANGLE = 45;
-        const float MAX_ANGLE_X_DIFF = 300;
-        const float SPEED_DIVISOR = 42;
+        const float MAX_THROTTLE = 0.2f;
+        const float NORMAL_THROTTLE = 0.09f;
+        const float MIN_THROTTLE = 0;
+        const float GRAVITY = -0.1f;
+
         public float Height = 40;
         public float Width = 100;
         public float X = 200;
         public float Y = 200;
-        public float Angle = 30;
-        public float TargetX = 600;
-        public float TargetY = 300;
+        public float Angle = 0;
+        public float Throttle = 0;
         public float DeltaX;
         public float DeltaY;
+
 
         Texture2D helicopterTexture;
          
@@ -30,27 +35,33 @@ namespace HeliFireFighting
             helicopterTexture = texture;
         }
 
-        public void Update(float mouseX, float mouseY)
+        public void Update(KeyboardState keyboardState)
         {
-            float diffX = mouseX - X;
-            float diffY = mouseY - Y;
-            DeltaX = diffX / SPEED_DIVISOR;
-            DeltaY = diffY / SPEED_DIVISOR;
-            X += DeltaX;
-            Y += DeltaY;
-            if (Math.Abs(diffX) > MAX_ANGLE_X_DIFF)
+            Throttle = NORMAL_THROTTLE;
+            if (keyboardState.GetPressedKeys().Contains(Keys.Up))
             {
-                Angle = MAX_ANGLE;
-                if (X > mouseX)
-                {
-                    Angle *= -1;
-                }
+                Throttle = MAX_THROTTLE;
             }
-            else
+            else if (keyboardState.GetPressedKeys().Contains(Keys.Down))
             {
-                Angle = diffX / MAX_ANGLE_X_DIFF * MAX_ANGLE;
+                Throttle = MIN_THROTTLE;
             }
 
+            if (keyboardState.GetPressedKeys().Contains(Keys.Left))
+            {
+                Angle -= ROTATION_RATE;
+            }
+            else if (keyboardState.GetPressedKeys().Contains(Keys.Right))
+            {
+                Angle += ROTATION_RATE;
+            }
+            DeltaX += Throttle*(float)Math.Cos((Angle - 90) / 180 * Math.PI);
+            DeltaY += Throttle * (float)Math.Sin((Angle - 90) / 180 * Math.PI) - GRAVITY;
+            DeltaX *= 0.995f;
+            DeltaY *= 0.995f;
+            X += DeltaX;
+            Y += DeltaY;
+           
         }
 
         public void Draw(SpriteBatch sb)

@@ -77,7 +77,7 @@ namespace HeliFireFighting
             // Update logic
             mouseState = Mouse.GetState();
             keyboardState = Keyboard.GetState();
-            world.Update(mouseState.X, mouseState.Y, mouseState.LeftButton == ButtonState.Pressed);
+            world.Update(mouseState,keyboardState);
 
             //global.MouseStateGlobal = mouseState;
             //global.KeyboardStateGlobal = keyboardState;
