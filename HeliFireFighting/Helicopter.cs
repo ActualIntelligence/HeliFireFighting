@@ -43,9 +43,9 @@ namespace HeliFireFighting
                 Throttle = MAX_THROTTLE;
             }
             else if (keyboardState.GetPressedKeys().Contains(Keys.Down))
-            {
+                {
                 Throttle = MIN_THROTTLE;
-            }
+                }
 
             if (keyboardState.GetPressedKeys().Contains(Keys.Left))
             {
@@ -61,7 +61,7 @@ namespace HeliFireFighting
             DeltaY *= 0.995f;
             X += DeltaX;
             Y += DeltaY;
-           
+
         }
 
         public void Draw(SpriteBatch sb)
