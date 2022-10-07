@@ -38,13 +38,14 @@ namespace HeliFireFighting
         }
 
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
         {
             float alpha = (1 - Size / MAX_SIZE);
             Color waterColor = Color.White*alpha;
             
             sb.Draw(waterTexture, 
-                new Rectangle((int)(X - Size / 2), (int)(Y - Size / 2), (int)Size, (int)Size), 
+                new Rectangle((int)(X - Size / 2 - cameraOffsetX), (int)(Y - Size / 2 - cameraOffsetY),
+                (int)Size, (int)Size), 
                 waterColor);
 
         }

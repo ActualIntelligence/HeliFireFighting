@@ -16,7 +16,7 @@ namespace HeliFireFighting
         public float Size;
 
         public abstract void Update();
-        public abstract void Draw(SpriteBatch sb);
+        public abstract void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY);
         public abstract bool ShouldBeRemoved();
     }
 }

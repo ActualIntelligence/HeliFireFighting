@@ -18,6 +18,9 @@ namespace HeliFireFighting
         const int MAX_HOUSE_HEIGHT = 60;
         const int CLEARING_MULTIPLIER = 2;
 
+        float cameraOffsetX = 0;
+        float cameraOffsetY = 0;
+
         int sunX = 200;
         int sunY = 50;
         int sunRadius = 21;
@@ -165,6 +168,9 @@ namespace HeliFireFighting
         {
             playerHeli.Update(keyboardState);
 
+            cameraOffsetX = playerHeli.X - ScreenWidth/2;
+            cameraOffsetY = playerHeli.Y - ScreenHeight/2;
+
             //Adds water.
             if (keyboardState.GetPressedKeys().Contains(Keys.Space))
             {
@@ -226,33 +232,33 @@ namespace HeliFireFighting
             {
                 if (!cloud.IsForeGound)
                 {
-                    cloud.Draw(sb);
+                    cloud.Draw(sb,cameraOffsetX,cameraOffsetY);
                 }
             }
 
-            terrain.Draw(sb);
+            terrain.Draw(sb, cameraOffsetX, cameraOffsetY);
 
             foreach (House house in houses)
             {
-                house.Draw(sb);
+                house.Draw(sb, cameraOffsetX, cameraOffsetY);
             }
 
             foreach (Tree tree in trees)
             {
-                tree.Draw(sb);
+                tree.Draw(sb, cameraOffsetX, cameraOffsetY);
             }
 
-            playerHeli.Draw(sb);
+            playerHeli.Draw(sb, cameraOffsetX, cameraOffsetY);
             foreach (Particle particle in particles)
             {
-                particle.Draw(sb);
+                particle.Draw(sb, cameraOffsetX, cameraOffsetY);
             }
 
             foreach (Cloud cloud in clouds)
             {
                 if (cloud.IsForeGound)
                 {
-                    cloud.Draw(sb);
+                    cloud.Draw(sb, cameraOffsetX, cameraOffsetY);
                 }
             }
         }

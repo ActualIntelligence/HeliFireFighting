@@ -22,9 +22,10 @@ namespace HeliFireFighting
         }
 
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
         {
-            Rectangle rect = new Rectangle((int)(X - Width / 2), (int)(Y - Height / 2), (int)Width, (int)Height);
+            Rectangle rect = new Rectangle((int)(X - Width / 2 - cameraOffsetX),
+                (int)(Y - Height / 2 - cameraOffsetY), (int)Width, (int)Height);
             sb.Draw(houseTexture, rect, null, Color.White);
         }
     }

@@ -64,9 +64,9 @@ namespace HeliFireFighting
 
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
         {
-            Rectangle rect = new Rectangle((int)(X), (int)(Y), (int)Width, (int)Height);
+            Rectangle rect = new Rectangle((int)(X - cameraOffsetX), (int)(Y - cameraOffsetY), (int)Width, (int)Height);
             sb.Draw(helicopterTexture,rect,null,Color.White,
                (float)(Angle*Math.PI/180),new Vector2(helicopterTexture.Width/2, helicopterTexture.Height /2),SpriteEffects.None,0);
         }

@@ -43,13 +43,13 @@ namespace HeliFireFighting
         }
 
 
-        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch sb)
+        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
         {
             float alpha = (Size - MIN_SIZE) / (StartSize - MIN_SIZE);
             Color fireColor = new Color(Color.OrangeRed, alpha);
 
             sb.Draw(fireTexture,
-                new Rectangle((int)(X - Size / 2), (int)(Y - Size / 2), (int)Size, (int)Size),
+                new Rectangle((int)(X - Size / 2 - cameraOffsetX), (int)(Y - Size / 2 - cameraOffsetY), (int)Size, (int)Size),
                 fireColor);
         }
 
