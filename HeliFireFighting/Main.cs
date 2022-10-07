@@ -36,11 +36,11 @@ namespace HeliFireFighting
             TargetElapsedTime = TimeSpan.FromSeconds(1f / TARGET_FPS);
             IsFixedTimeStep = false;
 
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 480;
-
+            //graphics.PreferredBackBufferWidth = 800;
+            //graphics.PreferredBackBufferHeight = 480;
+            
 #if DEBUG
-            graphics.IsFullScreen = false;
+            //graphics.IsFullScreen = true;
             IsMouseVisible = true;
 #else
             graphics.IsFullScreen = true;
@@ -77,6 +77,12 @@ namespace HeliFireFighting
             // Update logic
             mouseState = Mouse.GetState();
             keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.Escape))
+            {
+                Exit();
+            }
+
             world.Update(mouseState,keyboardState);
 
             //global.MouseStateGlobal = mouseState;
