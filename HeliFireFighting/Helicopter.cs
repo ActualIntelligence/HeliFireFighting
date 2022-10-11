@@ -55,12 +55,29 @@ namespace HeliFireFighting
             {
                 Angle += ROTATION_RATE;
             }
-            DeltaX += Throttle*(float)Math.Cos((Angle - 90) / 180 * Math.PI);
-            DeltaY += Throttle * (float)Math.Sin((Angle - 90) / 180 * Math.PI) - GRAVITY;
+            float spaceAltitude = -250;
+            float denseAltitude = 125;
+
+
+            float airDensity = (Y - denseAltitude) / (-spaceAltitude - denseAltitude) + 1;
+            airDensity = Math.Clamp(airDensity, 0, 1);
+
+            DeltaX += Throttle*(float)Math.Cos((Angle - 90) / 180 * Math.PI)*
+                airDensity;
+            DeltaY += Throttle * (float)Math.Sin((Angle - 90) / 180 * Math.PI)*
+                airDensity- GRAVITY;
             DeltaX *= 0.995f;
             DeltaY *= 0.995f;
             X += DeltaX;
             Y += DeltaY;
+
+            if(Y > 460)
+            {
+                Y = 460;
+                DeltaY = 0;
+                Angle = 0;
+                DeltaX *= 0.9f;
+            }
 
         }
 

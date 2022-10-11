@@ -98,7 +98,12 @@ namespace HeliFireFighting
         public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
         {
             if(terrainTex != null)
-                sb.Draw(terrainTex, new Vector2(-cameraOffsetX,-cameraOffsetY), Color.White);
+            {
+                Rectangle rectangle = new Rectangle((int)-cameraOffsetX,(int)-cameraOffsetY,
+                    terrainTex.Width, terrainTex.Height);
+                sb.Draw(terrainTex, rectangle, Color.White);
+            }
+                
         }
 
         public int HeightOfTerrainAtX(int x)

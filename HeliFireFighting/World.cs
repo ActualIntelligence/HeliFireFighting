@@ -168,8 +168,13 @@ namespace HeliFireFighting
         {
             playerHeli.Update(keyboardState);
 
-            cameraOffsetX = playerHeli.X - ScreenWidth/2;
-            cameraOffsetY = playerHeli.Y - ScreenHeight/2;
+            cameraOffsetX = (int)(playerHeli.X - ScreenWidth/2);
+            cameraOffsetY = (int)(playerHeli.Y - ScreenHeight/2);
+
+            if(cameraOffsetY >= 0)
+            {
+                cameraOffsetY = 0;
+            }
 
             //Adds water.
             if (keyboardState.GetPressedKeys().Contains(Keys.Space))
