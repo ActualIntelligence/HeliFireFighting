@@ -14,11 +14,14 @@ namespace HeliFireFighting
         const float MAX_SIZE = 35;
         const float DISPERSAL_RATE = 0.5f;
 
+        World world;
         Texture2D waterTexture;
-        public WaterParticle(Texture2D texture)
+        public WaterParticle(Texture2D texture, World gameWorld)
         {
             waterTexture = texture;
+            world = gameWorld;
         }
+
         public override void Update()
         {
             DeltaX *= 0.95f;
@@ -38,15 +41,12 @@ namespace HeliFireFighting
         }
 
 
-        public override void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        public override void Draw()
         {
             float alpha = (1 - Size / MAX_SIZE);
             Color waterColor = Color.White*alpha;
-            
-            sb.Draw(waterTexture, 
-                new Rectangle((int)(X - Size / 2 - cameraOffsetX), (int)(Y - Size / 2 - cameraOffsetY),
-                (int)Size, (int)Size), 
-                waterColor);
+
+            world.DrawInWorld(waterTexture, X, Y, Size, Size, 0, 0);
 
         }
 

@@ -15,13 +15,15 @@ namespace HeliFireFighting
         const float SHRINK_RATE = 0.5f;
         float StartSize = 0;
 
+        World world;
         Texture2D fireTexture;
 
-        public FireParticle(Texture2D texture, float startingSize)
+        public FireParticle(Texture2D texture, float startingSize, World gameWorld)
         {
             StartSize = startingSize;
             Size = startingSize;
             fireTexture = texture;
+            world = gameWorld;
         }
 
         public override void Update()
@@ -43,14 +45,13 @@ namespace HeliFireFighting
         }
 
 
-        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        public override void Draw()
         {
             float alpha = (Size - MIN_SIZE) / (StartSize - MIN_SIZE);
             Color fireColor = new Color(Color.OrangeRed, alpha);
 
-            sb.Draw(fireTexture,
-                new Rectangle((int)(X - Size / 2 - cameraOffsetX), (int)(Y - Size / 2 - cameraOffsetY), (int)Size, (int)Size),
-                fireColor);
+            world.DrawInWorld(fireTexture, X, Y, Size, Size, 0, 0);
+
         }
 
         public override bool ShouldBeRemoved()

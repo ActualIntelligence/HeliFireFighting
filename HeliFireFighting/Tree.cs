@@ -15,19 +15,18 @@ namespace HeliFireFighting
         public int Width = 64;
         public int Height = 120;
 
+        World world;
         Texture2D treeTexture;
-
-        public Tree(Texture2D texture)
+        public Tree(Texture2D texture, World gameWorld)
         {
             treeTexture = texture;
+            world = gameWorld;
         }
 
-
-        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        
+        public void Draw()
         {
-            Rectangle rect = new Rectangle((int)(X - Width / 2 - cameraOffsetX),
-                (int)(Y - Height / 2 - cameraOffsetY), (int)Width, (int)Height);
-            sb.Draw(treeTexture, rect, null, Color.White);
+            world.DrawInWorld(treeTexture, X, Y, Width, Height, 0, 0);
         }
     }
 }

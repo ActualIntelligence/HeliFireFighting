@@ -11,36 +11,41 @@ namespace HeliFireFighting
     internal class Terrain
     {
         Point[] terrainPoints = new Point[2];
+        World world;
         Texture2D grassTexture;
         Texture2D terrainTex;
-        public Terrain(Texture2D texture)
+        public Terrain(Texture2D texture,World gameWorld)
         {
             grassTexture = texture;
+            world = gameWorld;
         }
 
-        public void Generate( GraphicsDevice graphics, int subdivideCount, int screenWidth, int screenHeight)
+        public void Generate( GraphicsDevice graphics, int subdivideCount,
+            int terrainWidth, int terrainHeight)
         {
-            terrainPoints[0] = new Point(0, screenHeight / 2);
-            terrainPoints[1] = new Point(screenWidth, screenHeight / 2
+            terrainPoints[0] = new Point(0, terrainHeight / 2);
+            terrainPoints[1] = new Point(terrainWidth, terrainHeight / 2
                 );
 
             // create terrain
+            int verticalDelta = terrainHeight / 2;
             for (int i = 0; i < subdivideCount; i++)
             {
-                terrainPoints = SubdividePoints(terrainPoints);
+                terrainPoints = SubdividePoints(terrainPoints,verticalDelta);
+                verticalDelta /= 2;
             }
-            Color[] terrainColors = new Color[screenWidth*screenHeight];
-            terrainTex = new Texture2D(graphics, screenWidth, screenHeight);
+            Color[] terrainColors = new Color[terrainWidth*terrainHeight];
+            terrainTex = new Texture2D(graphics, terrainWidth, terrainHeight);
             terrainTex.GetData(terrainColors);
 
             Color[] grassColors = new Color[grassTexture.Width * grassTexture.Height];
             grassTexture.GetData(grassColors);
 
-            for(int x = 0; x<screenWidth; x++)
+            for(int x = 0; x<terrainWidth; x++)
             {
-                for (int y = 0; y < screenHeight; y++)
+                for (int y = 0; y < terrainHeight; y++)
                 {
-                    int index = y * screenWidth + x;
+                    int index = y * terrainWidth + x;
                     if (y > HeightOfTerrainAtX(x))
                     {
                         int grassX = x % grassTexture.Width;
@@ -65,7 +70,7 @@ namespace HeliFireFighting
         /// </summary>
         /// <param name="inputPoints">The array of points to subdivide.</param>
         /// <returns>The array of subdivided points.</returns>
-        Point[] SubdividePoints(Point[] inputPoints)
+        Point[] SubdividePoints(Point[] inputPoints, int maxVerticalDelta)
         {
             Random random = new Random();
             Point[] outputPoints = new Point[inputPoints.Length * 2 - 1];
@@ -86,7 +91,7 @@ namespace HeliFireFighting
                     int xDistance = secondPoint.X - firstPoint.X;
                     int x = (firstPoint.X + secondPoint.X) / 2;
                     int y = (firstPoint.Y + secondPoint.Y) / 2 +
-                        random.Next(-xDistance / 4, xDistance / 4);
+                        random.Next(-maxVerticalDelta, maxVerticalDelta+1);
                     Point midPoint = new Point(x, y);
                     outputPoints[i] = midPoint;
                 }
@@ -95,13 +100,12 @@ namespace HeliFireFighting
         }
 
 
-        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        public void Draw()
         {
             if(terrainTex != null)
             {
-                Rectangle rectangle = new Rectangle((int)-cameraOffsetX,(int)-cameraOffsetY,
-                    terrainTex.Width, terrainTex.Height);
-                sb.Draw(terrainTex, rectangle, Color.White);
+                world.DrawInWorld(terrainTex,terrainTex.Width/2,terrainTex.Height/2,terrainTex.Width,
+                    terrainTex.Height,0);
             }
                 
         }

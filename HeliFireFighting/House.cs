@@ -15,18 +15,19 @@ namespace HeliFireFighting
         public int Width = 64;
         public int Height = 32;
 
+        World world;
         Texture2D houseTexture;
-        public House(Texture2D texture)
+
+        public House(Texture2D texture, World gameWorld)
         {
             houseTexture = texture;
+            world = gameWorld;
         }
 
-
-        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        
+        public void Draw()
         {
-            Rectangle rect = new Rectangle((int)(X - Width / 2 - cameraOffsetX),
-                (int)(Y - Height / 2 - cameraOffsetY), (int)Width, (int)Height);
-            sb.Draw(houseTexture, rect, null, Color.White);
+            world.DrawInWorld(houseTexture, X, Y, Width, Height, 0, 0);
         }
     }
 }

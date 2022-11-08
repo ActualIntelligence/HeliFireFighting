@@ -17,17 +17,18 @@ namespace HeliFireFighting
         public bool IsForeGound = false;
 
         Texture2D cloudTexture;
-        public Cloud(Texture2D texture)
+        World world;
+
+        public Cloud(Texture2D texture, World gameWorld)
         {
-            cloudTexture = texture;
+           cloudTexture = texture;
+            world = gameWorld;
         }
 
 
-        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        public void Draw()
         {
-            Rectangle rect = new Rectangle((int)(X - Width / 2 - cameraOffsetX),
-                (int)(Y - Height / 2 - cameraOffsetY), (int)Width, (int)Height);
-            sb.Draw(cloudTexture, rect, null, IsForeGound ? Color.White : Color.LightGray);
+            world.DrawInWorld(cloudTexture, (float)X, (float) Y, Width, Height, 0, 0);
         }
     }
 }

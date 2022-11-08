@@ -22,17 +22,18 @@ namespace HeliFireFighting
         public float Width = 100;
         public float X = 200;
         public float Y = 200;
-        public float Angle = 0;
+        public float Rotation = 0;
         public float Throttle = 0;
         public float DeltaX;
         public float DeltaY;
 
-
+        World world;
         Texture2D helicopterTexture;
-         
-        public Helicopter(Texture2D texture)
+
+        public Helicopter(Texture2D texture, World gameWorld)
         {
             helicopterTexture = texture;
+            world = gameWorld;
         }
 
         public void Update(KeyboardState keyboardState)
@@ -43,49 +44,50 @@ namespace HeliFireFighting
                 Throttle = MAX_THROTTLE;
             }
             else if (keyboardState.GetPressedKeys().Contains(Keys.Down))
-                {
+            {
                 Throttle = MIN_THROTTLE;
-                }
+            }
 
             if (keyboardState.GetPressedKeys().Contains(Keys.Left))
             {
-                Angle -= ROTATION_RATE;
+                Rotation -= ROTATION_RATE;
             }
             else if (keyboardState.GetPressedKeys().Contains(Keys.Right))
             {
-                Angle += ROTATION_RATE;
+                Rotation += ROTATION_RATE;
             }
-            float spaceAltitude = -250;
+            float spaceAltitude = 250;
             float denseAltitude = 125;
 
 
             float airDensity = (Y - denseAltitude) / (-spaceAltitude - denseAltitude) + 1;
             airDensity = Math.Clamp(airDensity, 0, 1);
 
-            DeltaX += Throttle*(float)Math.Cos((Angle - 90) / 180 * Math.PI)*
+            DeltaX += Throttle * (float)Math.Cos((Rotation - 90) / 180 * Math.PI) *
                 airDensity;
-            DeltaY += Throttle * (float)Math.Sin((Angle - 90) / 180 * Math.PI)*
-                airDensity- GRAVITY;
+            DeltaY += Throttle * (float)Math.Sin((Rotation + 90) / 180 * Math.PI) *
+                airDensity + GRAVITY;
             DeltaX *= 0.995f;
             DeltaY *= 0.995f;
             X += DeltaX;
             Y += DeltaY;
 
-            if(Y > 460)
+            int groundLevel = 0;
+            if (Y - helicopterTexture.Height / 2 < groundLevel)
+
             {
-                Y = 460;
+                Y = groundLevel + helicopterTexture.Height / 2;
                 DeltaY = 0;
-                Angle = 0;
+                Rotation = 0;
                 DeltaX *= 0.9f;
             }
 
         }
 
-        public void Draw(SpriteBatch sb, float cameraOffsetX, float cameraOffsetY)
+        public void Draw()
         {
-            Rectangle rect = new Rectangle((int)(X - cameraOffsetX), (int)(Y - cameraOffsetY), (int)Width, (int)Height);
-            sb.Draw(helicopterTexture,rect,null,Color.White,
-               (float)(Angle*Math.PI/180),new Vector2(helicopterTexture.Width/2, helicopterTexture.Height /2),SpriteEffects.None,0);
+            world.DrawInWorld(helicopterTexture, X, Y, Width, Height,
+                (float)(Rotation * Math.PI / 180), 0);
         }
     }
 }

@@ -36,8 +36,8 @@ namespace HeliFireFighting
             TargetElapsedTime = TimeSpan.FromSeconds(1f / TARGET_FPS);
             IsFixedTimeStep = false;
 
-            //graphics.PreferredBackBufferWidth = 800;
-            //graphics.PreferredBackBufferHeight = 480;
+            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = 640;
             
 #if DEBUG
             //graphics.IsFullScreen = true;
@@ -53,8 +53,7 @@ namespace HeliFireFighting
             keyboardState = Keyboard.GetState();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             //global = new Global(this, GraphicsDevice, spriteBatch);
-            world = new World(GraphicsDevice,
-                graphics.PreferredBackBufferWidth,graphics.PreferredBackBufferHeight);
+            world = new World(GraphicsDevice, spriteBatch);
             base.Initialize();
         }
 
@@ -102,7 +101,7 @@ namespace HeliFireFighting
             GraphicsDevice.Clear(Color.SkyBlue);
 
             spriteBatch.Begin();
-            world.Draw(spriteBatch);
+            world.DrawWorld(spriteBatch);
             spriteBatch.End();
             //global.SpriteBatchGlobal.Begin();
             //global.ActiveScreen.Draw();

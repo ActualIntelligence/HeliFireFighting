@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace HeliFireFighting
 {
-    internal class World
+    public class World
     {
         const int CLOUD_COUNT = 42;
         const int TREE_COUNT = 100;
@@ -17,6 +18,8 @@ namespace HeliFireFighting
         const int MIN_HOUSE_HEIGHT = 30;
         const int MAX_HOUSE_HEIGHT = 60;
         const int CLEARING_MULTIPLIER = 2;
+        public const int TERRAIN_WIDTH = 2400;
+        public const int TERRAIN_HEIGHT = 500;
 
         float cameraOffsetX = 0;
         float cameraOffsetY = 0;
@@ -28,10 +31,12 @@ namespace HeliFireFighting
         int ScreenWidth = 0;
         int ScreenHeight = 0;
 
+
         #region classes
         Helicopter playerHeli;
 
-        GraphicsDevice graphicsdevice;
+        GraphicsDevice graphicsDevice;
+        SpriteBatch spriteBatch;
 
         Texture2D helicopterTexture;// = Texture2D.FromFile("Art/helicopter.png");
         Texture2D cloudTexture;
@@ -53,23 +58,24 @@ namespace HeliFireFighting
         Random random = new Random();
         #endregion
 
-        public World(GraphicsDevice gd, int screenWidth, int screenHeight)
+        public World(GraphicsDevice gd, SpriteBatch sb)
         {
-            graphicsdevice = gd;
-            ScreenWidth = screenWidth;
-            ScreenHeight = screenHeight;
+            graphicsDevice = gd;
+            spriteBatch = sb;
+            ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
             LoadContent();
 
-            playerHeli = new Helicopter(helicopterTexture);
-            terrain = new Terrain(grassTexture);
-            terrain.Generate(gd, 5, ScreenWidth, ScreenHeight);
+            playerHeli = new Helicopter(helicopterTexture, this);
+            terrain = new Terrain(grassTexture, this);
+            terrain.Generate(gd, 5, TERRAIN_WIDTH, TERRAIN_HEIGHT);
 
             // makes clouds
             for (int i = 0; i < CLOUD_COUNT; i++)
             {
-                Cloud cloud = new Cloud(cloudTexture);
-                cloud.X = random.Next(0, ScreenWidth);
+                Cloud cloud = new Cloud(cloudTexture, this);
+                cloud.X = random.Next(0, TERRAIN_WIDTH);
                 cloud.Y = random.Next(0, 200);
                 cloud.Width = random.Next(50, 120);
                 cloud.IsForeGound = random.NextDouble() > 0.5;
@@ -79,14 +85,14 @@ namespace HeliFireFighting
             // build houses
             for (int i = 0; i < HOUSE_COUNT; i++)
             {
-                House foundation = new House(houseTexture);
+                House foundation = new House(houseTexture, this);
                 foundation.Width = random.Next(MIN_HOUSE_WIDTH, MAX_HOUSE_WIDTH);
                 foundation.Height = random.Next(MIN_HOUSE_HEIGHT, MAX_HOUSE_HEIGHT);
 
                 bool isSafeToBuild = false;
                 do
                 {
-                    foundation.X = random.Next(ScreenWidth);
+                    foundation.X = random.Next(TERRAIN_WIDTH);
                     foundation.Y = terrain.HeightOfTerrainAtX(foundation.X) + random.Next(5, 250);
 
                     int leftYDiff = foundation.Y - terrain.HeightOfTerrainAtX(foundation.X - foundation.Width);
@@ -116,12 +122,12 @@ namespace HeliFireFighting
             // plant trees
             for (int i = 0; i < trees.Length; i++)
             {
-                Tree sapling = new Tree(tree1Texture);
+                Tree sapling = new Tree(tree1Texture,this);
 
                 bool isInTheClear = false;
                 while (isInTheClear == false)
                 {
-                    sapling.X = random.Next(ScreenWidth);
+                    sapling.X = random.Next(TERRAIN_WIDTH);
                     sapling.Y = terrain.HeightOfTerrainAtX(sapling.X) + random.Next(5, 250);
                     isInTheClear = true;
                     foreach (House house in houses)
@@ -149,13 +155,13 @@ namespace HeliFireFighting
         
         public void LoadContent()
         {
-            helicopterTexture = Texture2D.FromFile(graphicsdevice, "Art/Helicopter.png");
-            cloudTexture = Texture2D.FromFile(graphicsdevice, "Art/Cloud.png");
-            fireTexture = Texture2D.FromFile(graphicsdevice, "Art/Fire.png");
-            waterTexture = Texture2D.FromFile(graphicsdevice, "Art/Water.png");
-            tree1Texture = Texture2D.FromFile(graphicsdevice, "Art/Tree1.png");
-            houseTexture = Texture2D.FromFile(graphicsdevice, "Art/LogCabin.png");
-            grassTexture = Texture2D.FromFile(graphicsdevice, "Art/RockGrassyTexture.jpg");
+            helicopterTexture = Texture2D.FromFile(graphicsDevice, "Art/Helicopter.png");
+            cloudTexture = Texture2D.FromFile(graphicsDevice, "Art/Cloud.png");
+            fireTexture = Texture2D.FromFile(graphicsDevice, "Art/Fire.png");
+            waterTexture = Texture2D.FromFile(graphicsDevice, "Art/Water.png");
+            tree1Texture = Texture2D.FromFile(graphicsDevice, "Art/Tree1.png");
+            houseTexture = Texture2D.FromFile(graphicsDevice, "Art/LogCabin.png");
+            grassTexture = Texture2D.FromFile(graphicsDevice, "Art/RockGrassyTexture.jpg");
         }
 
         /// <summary>
@@ -168,8 +174,8 @@ namespace HeliFireFighting
         {
             playerHeli.Update(keyboardState);
 
-            cameraOffsetX = (int)(playerHeli.X - ScreenWidth/2);
-            cameraOffsetY = (int)(playerHeli.Y - ScreenHeight/2);
+            cameraOffsetX = (int)(playerHeli.X - ScreenWidth / 2);
+            cameraOffsetY = (int)(-playerHeli.Y - ScreenHeight / 2);
 
             if(cameraOffsetY >= 0)
             {
@@ -179,7 +185,7 @@ namespace HeliFireFighting
             //Adds water.
             if (keyboardState.GetPressedKeys().Contains(Keys.Space))
             {
-                WaterParticle particle = new WaterParticle(waterTexture);
+                WaterParticle particle = new WaterParticle(waterTexture, this);
                 particle.X = playerHeli.X;
                 particle.Y = playerHeli.Y;
                 particle.DeltaX = playerHeli.DeltaX;
@@ -220,52 +226,64 @@ namespace HeliFireFighting
                     puffy.X += 0.4;
                 }
 
-                if (puffy.X > ScreenWidth + puffy.Width / 2)
+                if (puffy.X > TERRAIN_WIDTH + puffy.Width / 2)
                 {
                     puffy.X = -puffy.Width / 2;
                 }
                 else if (puffy.X < -puffy.Width / 2)
                 {
-                    puffy.X = ScreenWidth + puffy.Width / 2;
+                    puffy.X = TERRAIN_WIDTH + puffy.Width / 2;
                 }
             }
         }
 
-        public void Draw(SpriteBatch sb)
+        public void DrawWorld(SpriteBatch sb)
         {
             foreach (Cloud cloud in clouds)
             {
                 if (!cloud.IsForeGound)
                 {
-                    cloud.Draw(sb,cameraOffsetX,cameraOffsetY);
+                    cloud.Draw();
                 }
             }
 
-            terrain.Draw(sb, cameraOffsetX, cameraOffsetY);
+            terrain.Draw();
 
             foreach (House house in houses)
             {
-                house.Draw(sb, cameraOffsetX, cameraOffsetY);
+                house.Draw();
             }
 
             foreach (Tree tree in trees)
             {
-                tree.Draw(sb, cameraOffsetX, cameraOffsetY);
+                tree.Draw();
             }
 
-            playerHeli.Draw(sb, cameraOffsetX, cameraOffsetY);
+            playerHeli.Draw();
             foreach (Particle particle in particles)
             {
-                particle.Draw(sb, cameraOffsetX, cameraOffsetY);
+                particle.Draw();
             }
 
             foreach (Cloud cloud in clouds)
             {
                 if (cloud.IsForeGound)
                 {
-                    cloud.Draw(sb, cameraOffsetX, cameraOffsetY);
+                    cloud.Draw();
                 }
             }
+        }
+
+        public void DrawInWorld(Texture2D texture,
+            float worldX, float worldY,
+            float width, float height, float rotation, float layerDepth = 0)
+        {
+            Vector2 scale = new Vector2(width / texture.Width, height / texture.Height);
+            spriteBatch.Draw(texture,
+                new Vector2(worldX - cameraOffsetX,
+                -(worldY + cameraOffsetY)),
+                null, Color.White, rotation,
+               new Vector2(width, height), scale, SpriteEffects.None, layerDepth);
         }
     }
 }
