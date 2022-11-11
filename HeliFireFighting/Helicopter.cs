@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HeliFireFighting
 {
-    internal class Helicopter
+    public class Helicopter
     {
         const float ROTATION_RATE = 2;
         const float MAX_ANGLE = 45;
@@ -87,7 +87,7 @@ namespace HeliFireFighting
         public void Draw()
         {
             world.DrawInWorld(helicopterTexture, X, Y, Width, Height,
-                (float)(Rotation * Math.PI / 180), 0);
+                Rotation, 0);
         }
     }
 }

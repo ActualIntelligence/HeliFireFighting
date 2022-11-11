@@ -33,7 +33,7 @@ namespace HeliFireFighting
 
 
         #region classes
-        Helicopter playerHeli;
+        public Helicopter playerHeli;
 
         GraphicsDevice graphicsDevice;
         SpriteBatch spriteBatch;
@@ -276,14 +276,14 @@ namespace HeliFireFighting
 
         public void DrawInWorld(Texture2D texture,
             float worldX, float worldY,
-            float width, float height, float rotation, float layerDepth = 0)
+            float width, float height, float rotationDegrees, float layerDepth = 0)
         {
             Vector2 scale = new Vector2(width / texture.Width, height / texture.Height);
             spriteBatch.Draw(texture,
                 new Vector2(worldX - cameraOffsetX,
                 -(worldY + cameraOffsetY)),
-                null, Color.White, rotation,
-               new Vector2(width, height), scale, SpriteEffects.None, layerDepth);
+                null, Color.White, rotationDegrees*MathF.PI/180,
+               new Vector2(width/2, height/2), scale, SpriteEffects.None, layerDepth);
         }
     }
 }

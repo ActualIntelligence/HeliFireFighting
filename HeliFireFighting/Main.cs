@@ -83,7 +83,7 @@ namespace HeliFireFighting
             }
 
             world.Update(mouseState,keyboardState);
-
+            Window.Title = $"X: {world.playerHeli.X:0.0}, Y: {world.playerHeli.Y:0.0}";
             //global.MouseStateGlobal = mouseState;
             //global.KeyboardStateGlobal = keyboardState;
             //global.ActiveScreen.Update(mouseState, keyboardState);
