@@ -10,7 +10,7 @@ namespace HeliFireFighting
 {
     internal class WaterParticle : Particle
     {
-        const float TERMINAL_VELOCITY = 5;
+        const float TERMINAL_VELOCITY = -5;
         const float MAX_SIZE = 35;
         const float DISPERSAL_RATE = 0.5f;
 

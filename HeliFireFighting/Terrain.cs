@@ -46,15 +46,15 @@ namespace HeliFireFighting
                 for (int y = 0; y < terrainHeight; y++)
                 {
                     int index = y * terrainWidth + x;
-                    if (y > HeightOfTerrainAtX(x))
+                    if (y < terrainHeight - HeightOfTerrainAtX(x))
                     {
-                        int grassX = x % grassTexture.Width;
-                        int grassY = y % grassTexture.Height;
-                        terrainColors[index] = grassColors[grassY*grassTexture.Width+grassX];
+                        terrainColors[index] = Color.Transparent;
                     }
                     else
                     {
-                        terrainColors[index] = Color.Transparent;
+                        int grassX = x % grassTexture.Width;
+                        int grassY = y % grassTexture.Height;
+                        terrainColors[index] = grassColors[grassY * grassTexture.Width + grassX];
                     }
                 } 
             }

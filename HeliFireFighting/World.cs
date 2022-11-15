@@ -7,7 +7,7 @@ namespace HeliFireFighting
     public class World
     {
         const int CLOUD_COUNT = 42;
-        const int TREE_COUNT = 100;
+        const int TREE_COUNT = 500;
         const int MIN_TREE_WIDTH = 20;
         const int MAX_TREE_WIDTH = 50;
         const int MIN_TREE_HEIGHT = 30;
@@ -93,14 +93,14 @@ namespace HeliFireFighting
                 do
                 {
                     foundation.X = random.Next(TERRAIN_WIDTH);
-                    foundation.Y = terrain.HeightOfTerrainAtX(foundation.X) + random.Next(5, 250);
+                    foundation.Y = terrain.HeightOfTerrainAtX(foundation.X) - random.Next(5, 125);
 
                     int leftYDiff = foundation.Y - terrain.HeightOfTerrainAtX(foundation.X - foundation.Width);
                     int rightYDiff = foundation.Y - terrain.HeightOfTerrainAtX(foundation.X + foundation.Width);
                     int minYDiff = Math.Min(leftYDiff, rightYDiff);
                     if (minYDiff < 0)
                     {
-                        foundation.Y -= minYDiff;
+                        foundation.Y += minYDiff;
                     }
 
                     isSafeToBuild = true;
@@ -128,7 +128,7 @@ namespace HeliFireFighting
                 while (isInTheClear == false)
                 {
                     sapling.X = random.Next(TERRAIN_WIDTH);
-                    sapling.Y = terrain.HeightOfTerrainAtX(sapling.X) + random.Next(5, 250);
+                    sapling.Y = terrain.HeightOfTerrainAtX(sapling.X) - random.Next(5, 250);
                     isInTheClear = true;
                     foreach (House house in houses)
                     {
@@ -174,8 +174,8 @@ namespace HeliFireFighting
         {
             playerHeli.Update(keyboardState);
 
-            cameraOffsetX = (int)(playerHeli.X - ScreenWidth / 2);
-            cameraOffsetY = (int)(-playerHeli.Y - ScreenHeight / 2);
+            cameraOffsetX = (int)(playerHeli.X - ScreenWidth / 2 + playerHeli.Width / 2);
+            cameraOffsetY = (int)(-playerHeli.Y - ScreenHeight / 2 + playerHeli.Height / 2);
 
             if(cameraOffsetY >= 0)
             {
@@ -283,7 +283,7 @@ namespace HeliFireFighting
                 new Vector2(worldX - cameraOffsetX,
                 -(worldY + cameraOffsetY)),
                 null, Color.White, rotationDegrees*MathF.PI/180,
-               new Vector2(width/2, height/2), scale, SpriteEffects.None, layerDepth);
+               new Vector2(texture.Width/2, texture.Height /2), scale, SpriteEffects.None, layerDepth);
         }
     }
 }

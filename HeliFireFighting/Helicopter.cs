@@ -15,7 +15,7 @@ namespace HeliFireFighting
         const float MAX_ANGLE = 45;
         const float MAX_THROTTLE = 0.2f;
         const float NORMAL_THROTTLE = 0.09f;
-        const float MIN_THROTTLE = 0;
+        const float MIN_THROTTLE = -0.1f;
         const float GRAVITY = -0.1f;
 
         public float Height = 40;
@@ -73,15 +73,15 @@ namespace HeliFireFighting
             Y += DeltaY;
 
             int groundLevel = 0;
-            if (Y - helicopterTexture.Height / 2 < groundLevel)
+            if (Y  < groundLevel + Height / 2)
 
             {
-                Y = groundLevel + helicopterTexture.Height / 2;
+                Y = groundLevel + Height / 2;
                 DeltaY = 0;
                 Rotation = 0;
                 DeltaX *= 0.9f;
             }
-
+             
         }
 
         public void Draw()
