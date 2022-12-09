@@ -53,7 +53,9 @@ namespace HeliFireFighting
             keyboardState = Keyboard.GetState();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             //global = new Global(this, GraphicsDevice, spriteBatch);
-            world = new World(GraphicsDevice, spriteBatch);
+            world = new World(GraphicsDevice, spriteBatch,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
             base.Initialize();
         }
 
@@ -83,7 +85,8 @@ namespace HeliFireFighting
             }
 
             world.Update(mouseState,keyboardState);
-            Window.Title = $"X: {world.playerHeli.X:0.0}, Y: {world.playerHeli.Y:0.0}";
+            Window.Title = $"X: {world.playerHeli.X:0.0}, Y: {world.playerHeli.Y:0.0}," +
+                $" CameraX: {world.cameraOffsetX}, CameraY: {world.cameraOffsetY}";
             //global.MouseStateGlobal = mouseState;
             //global.KeyboardStateGlobal = keyboardState;
             //global.ActiveScreen.Update(mouseState, keyboardState);

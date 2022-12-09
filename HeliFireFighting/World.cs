@@ -21,8 +21,8 @@ namespace HeliFireFighting
         public const int TERRAIN_WIDTH = 2400;
         public const int TERRAIN_HEIGHT = 500;
 
-        float cameraOffsetX = 0;
-        float cameraOffsetY = 0;
+        public float cameraOffsetX = 0;
+        public float cameraOffsetY = 0;
 
         int sunX = 200;
         int sunY = 50;
@@ -58,12 +58,12 @@ namespace HeliFireFighting
         Random random = new Random();
         #endregion
 
-        public World(GraphicsDevice gd, SpriteBatch sb)
+        public World(GraphicsDevice gd, SpriteBatch sb, int screenWidth, int screenHeight)
         {
             graphicsDevice = gd;
             spriteBatch = sb;
-            ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            ScreenWidth = screenWidth;
+            ScreenHeight = screenHeight;
 
             LoadContent();
 
@@ -177,9 +177,17 @@ namespace HeliFireFighting
             cameraOffsetX = (int)(playerHeli.X - ScreenWidth / 2 + playerHeli.Width / 2);
             cameraOffsetY = (int)(-playerHeli.Y - ScreenHeight / 2 + playerHeli.Height / 2);
 
-            if(cameraOffsetY >= 0)
+            if (cameraOffsetX <= 0)
             {
-                cameraOffsetY = 0;
+                cameraOffsetX = 0;
+            }
+            if (cameraOffsetX >= TERRAIN_WIDTH - ScreenWidth)
+            {
+                cameraOffsetX = TERRAIN_WIDTH - ScreenWidth;
+            }
+            if (cameraOffsetY >= -ScreenHeight)
+            {
+                cameraOffsetY = -ScreenHeight;
             }
 
             //Adds water.
