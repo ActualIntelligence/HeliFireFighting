@@ -20,6 +20,7 @@ namespace HeliFireFighting
         const int CLEARING_MULTIPLIER = 2;
         public const int TERRAIN_WIDTH = 2400;
         public const int TERRAIN_HEIGHT = 500;
+        public const int BOUNDRY_WIND_WIDTH = 100;
 
         public float cameraOffsetX = 0;
         public float cameraOffsetY = 0;

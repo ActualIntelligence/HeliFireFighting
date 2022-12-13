@@ -72,6 +72,19 @@ namespace HeliFireFighting
             X += DeltaX;
             Y += DeltaY;
 
+            if (X < World.BOUNDRY_WIND_WIDTH)
+            {
+                float windSpeed = (World.BOUNDRY_WIND_WIDTH - X) / World.BOUNDRY_WIND_WIDTH;
+                DeltaX += windSpeed;
+            }
+            int eastWindStartX = World.TERRAIN_WIDTH - World.BOUNDRY_WIND_WIDTH;
+            if (X > eastWindStartX)
+            {
+                float windSpeed = (X - eastWindStartX)/(World.TERRAIN_WIDTH - eastWindStartX);
+                DeltaX -= windSpeed;
+            }
+
+
             int groundLevel = 0;
             if (Y  < groundLevel + Height / 2)
 
