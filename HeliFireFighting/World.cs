@@ -21,6 +21,7 @@ namespace HeliFireFighting
         public const int TERRAIN_WIDTH = 2400;
         public const int TERRAIN_HEIGHT = 500;
         public const int BOUNDRY_WIND_WIDTH = 100;
+        public const int TERRAIN_CELL_SIZE = 20;
 
         public float cameraOffsetX = 0;
         public float cameraOffsetY = 0;
@@ -36,7 +37,7 @@ namespace HeliFireFighting
         #region classes
         public Helicopter playerHeli;
 
-        GraphicsDevice graphicsDevice;
+        public GraphicsDevice graphicsDevice;
         SpriteBatch spriteBatch;
 
         Texture2D helicopterTexture;// = Texture2D.FromFile("Art/helicopter.png");
@@ -70,7 +71,7 @@ namespace HeliFireFighting
 
             playerHeli = new Helicopter(helicopterTexture, this);
             terrain = new Terrain(grassTexture, this);
-            terrain.Generate(gd, 5, TERRAIN_WIDTH, TERRAIN_HEIGHT);
+            terrain.Generate(gd, 5, TERRAIN_WIDTH, TERRAIN_HEIGHT,TERRAIN_CELL_SIZE);
 
             // makes clouds
             for (int i = 0; i < CLOUD_COUNT; i++)

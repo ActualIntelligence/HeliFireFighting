@@ -11,9 +11,12 @@ namespace HeliFireFighting
     internal class Terrain
     {
         Point[] terrainPoints = new Point[2];
+        public TerrainCell[,] terrainGrid;
         World world;
         Texture2D grassTexture;
         Texture2D terrainTex;
+        Texture2D cellTexture;
+        int terrainCellSize;
         public Terrain(Texture2D texture,World gameWorld)
         {
             grassTexture = texture;
@@ -21,8 +24,10 @@ namespace HeliFireFighting
         }
 
         public void Generate( GraphicsDevice graphics, int subdivideCount,
-            int terrainWidth, int terrainHeight)
+            int terrainWidth, int terrainHeight, int cellSize)
         {
+            terrainCellSize = cellSize;
+
             terrainPoints[0] = new Point(0, terrainHeight / 2);
             terrainPoints[1] = new Point(terrainWidth, terrainHeight / 2
                 );
@@ -60,6 +65,47 @@ namespace HeliFireFighting
             }
             terrainTex.SetData(terrainColors);
 
+            //Create cell texture.
+            cellTexture = new Texture2D(world.graphicsDevice, terrainCellSize, terrainCellSize);
+
+            Color[] cellColors = new Color[cellTexture.Width * cellTexture.Height];
+            cellTexture.GetData(cellColors);
+            Color cellColor = new Color(50, 200, 50, 100);
+            for(int i = 0; i < cellTexture.Width * cellTexture.Height; i++)
+            {
+                cellColors[i] = cellColor;
+            }
+
+            cellTexture.SetData(cellColors);
+
+            int terrainColumnCount = terrainWidth / terrainCellSize;
+            int terrainRowCount = terrainHeight / terrainCellSize;
+
+            terrainGrid = new TerrainCell[terrainRowCount, terrainColumnCount];
+
+            for (int row = 0; row < terrainRowCount; row++)
+            {
+                for (int col = 0; col < terrainColumnCount; col++)
+                {
+                    TerrainCell terrainCell = new TerrainCell();
+                    terrainCell.X = col * terrainCellSize;
+                    terrainCell.Y = row * terrainCellSize;
+                    terrainCell.Temperature = 300;
+                    terrainCell.MoistureContent = 10;
+
+                    bool isCellAboveTerrain = terrainCell.Y > HeightOfTerrainAtX((int)terrainCell.X);
+                    if (isCellAboveTerrain)
+                    {
+                        terrainCell.Type = EnvironmentType.Sky;
+                    }
+                    else
+                    {
+                        terrainCell.Type = EnvironmentType.EmptyLand;
+                    }
+                    terrainGrid[row, col] = terrainCell;
+                }
+
+            }
         }
 
 
@@ -106,6 +152,24 @@ namespace HeliFireFighting
             {
                 world.DrawInWorld(terrainTex,terrainTex.Width/2,terrainTex.Height/2,terrainTex.Width,
                     terrainTex.Height,0);
+
+                //TODO: loop through all terrain cells and draw boxes.
+                
+                for (int row = 0; row < terrainGrid.GetLength(0); row++)
+                {
+                    for (int col = 0; col < terrainGrid.GetLength(1); col++)
+                    {
+                        TerrainCell terrainCell = terrainGrid[row, col];
+
+                        if(terrainCell.Type == EnvironmentType.EmptyLand)
+                        {
+                            world.DrawInWorld(cellTexture, terrainCell.X + terrainCellSize/2,
+                                terrainCell.Y + terrainCellSize/2,
+                                terrainCellSize, terrainCellSize, 0);
+                        }
+                    }
+
+                }
             }
                 
         }
